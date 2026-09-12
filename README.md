@@ -1,4 +1,4 @@
-# Life RPG
+# SIGMA Life RPG
 
 A full-stack productivity RPG that turns real-world tasks into quests, XP, levels, streaks, attributes, gold, and unlockable rewards.
 
