@@ -1,12 +1,728 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090b11"><meta name="robots" content="noindex,nofollow"><title>Command Center — Life RPG</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css?v=__BUILD_ID__"><script defer src="/app.js?v=__BUILD_ID__"></script></head>
-<body class="app-body" data-theme="void"><a class="skip-link" href="#app-main">Skip to main content</a><div class="noise" aria-hidden="true"></div><div class="network-banner hidden" id="network-banner" role="status">Connection lost. Unsaved actions will not be faked.</div>
-<div class="app-shell" id="app-shell" aria-busy="true"><aside class="sidebar" aria-label="Life RPG navigation"><a class="brand app-brand" href="/"><span class="brand-mark" aria-hidden="true"><span></span></span><span>LIFE<span class="brand-accent">RPG</span></span></a><nav class="sidebar-nav"><button class="nav-item active" type="button" data-view="quests"><span>⌁</span><span>Quests</span></button><button class="nav-item" type="button" data-view="shop"><span>◇</span><span>Loot vault</span></button><button class="nav-item" type="button" data-view="history"><span>◒</span><span>Activity</span></button></nav><div class="sidebar-bottom"><div class="mini-player"><div class="mini-avatar" id="mini-avatar">01</div><div><strong id="sidebar-name">Player</strong><span id="sidebar-rank">Level 1</span></div></div><button class="nav-item danger" id="logout-button" type="button"><span>↪</span><span>Sign out</span></button></div></aside>
-<main id="app-main" class="dashboard-main"><header class="dashboard-header"><div><p class="eyebrow" id="day-label">COMMAND CENTER</p><h1><span id="greeting">Ready, Player?</span> <span class="muted">Your next level is built one quest at a time.</span></h1></div><div class="header-wallet"><span class="wallet-icon">◈</span><div><small>GOLD</small><strong id="gold-count">0</strong></div></div></header>
-<section id="view-quests" class="view-panel active"><div class="dashboard-grid top-grid"><article class="player-panel panel"><div class="player-level-wrap"><div class="level-ring" id="level-ring"><span>LVL</span><strong id="level-number">1</strong></div><div class="player-rank"><p>ACTIVE CLASS</p><h3>WAYFINDER</h3><span id="equipped-badge">No badge equipped</span></div></div><div class="progress-stack"><div class="progress-label"><span>LEVEL PROGRESS</span><b id="xp-label">0 / 100 XP</b></div><div class="xp-bar large"><span id="xp-progress" style="width:0%"></span></div><small id="xp-remaining">100 XP until level 2</small></div><div class="attribute-grid" id="attribute-grid"></div></article><article class="streak-panel panel"><div class="panel-label">CURRENT STREAK</div><div class="streak-value"><span class="streak-flame">◒</span><strong id="streak-count">0</strong><span>days</span></div><p id="streak-copy">Clear one quest today to ignite your streak.</p><div class="streak-week" id="streak-week"></div></article></div>
-<div class="quest-section-head"><div><p class="eyebrow">ACTIVE QUEST LOG</p><h2>Choose the next action.</h2></div><button class="button primary" id="new-quest-button" type="button">+ Forge quest</button></div><div class="quest-toolbar"><div class="filter-tabs" role="tablist"><button type="button" class="active" data-filter="active" aria-selected="true">Active <span id="active-count">0</span></button><button type="button" data-filter="completed" aria-selected="false">Cleared <span id="completed-count">0</span></button><button type="button" data-filter="all" aria-selected="false">All</button></div><label class="search-field"><span aria-hidden="true">⌕</span><input id="quest-search" type="search" placeholder="Search quest log" aria-label="Search quests"></label></div><div id="quest-list" class="quest-list" aria-live="polite"><div class="quest-skeleton"></div><div class="quest-skeleton"></div></div></section>
-<section id="view-shop" class="view-panel"><div class="view-heading"><div><p class="eyebrow">LOOT VAULT</p><h2>Spend progress. Keep the proof.</h2><p>Cosmetics and relics are purchased with gold earned from completed quests.</p></div><div class="vault-balance"><span>AVAILABLE</span><b>◈ <span id="shop-gold">0</span></b></div></div><div class="shop-grid" id="shop-grid"></div><div class="inventory-heading"><p class="eyebrow">INVENTORY</p><h2>Your collection</h2></div><div class="inventory-grid" id="inventory-grid"></div></section>
-<section id="view-history" class="view-panel"><div class="view-heading"><div><p class="eyebrow">ACTIVITY LOG</p><h2>Every action leaves a trace.</h2><p>Server-persisted history of your campaign.</p></div></div><div class="timeline" id="activity-timeline"></div></section>
-</main></div>
-<dialog class="quest-dialog" id="quest-dialog"><button class="dialog-close" type="button" data-close-quest aria-label="Close">×</button><p class="eyebrow">QUEST FORGE</p><h2 id="quest-dialog-title">Create a new quest</h2><p>Define one clear action. Rewards are calculated by the server.</p><form id="quest-form" class="quest-form"><input type="hidden" name="taskId"><label class="full-row"><span>Quest objective</span><input name="title" type="text" maxlength="120" required placeholder="e.g. Finish API integration"></label><label class="full-row"><span>Notes <small>optional</small></span><textarea name="notes" maxlength="300" rows="3" placeholder="What does done look like?"></textarea></label><label><span>Attribute</span><select name="category"><option value="intellect">◈ Intellect</option><option value="strength">▲ Strength</option><option value="discipline">◆ Discipline</option><option value="vitality">✦ Vitality</option></select></label><label><span>Difficulty</span><select name="difficulty"><option value="easy">Easy · +20 XP</option><option value="medium" selected>Medium · +40 XP</option><option value="hard">Hard · +70 XP</option><option value="epic">Epic · +110 XP</option></select></label><div class="reward-preview full-row"><span>ESTIMATED PAYOUT</span><strong id="reward-preview">+40 XP · +15 GOLD</strong></div><button class="button primary full full-row" type="submit">Save quest →</button></form><p class="form-status" id="quest-status" role="status" aria-live="polite"></p></dialog>
-<div class="toast-region" id="toast-region" role="status" aria-live="polite"></div><div class="level-up-overlay hidden" id="level-up-overlay" role="dialog" aria-modal="true"><div class="level-up-card"><p class="eyebrow">ASCENSION CONFIRMED</p><div class="ascension-ring"><span>LEVEL</span><strong id="level-up-number">2</strong></div><h2>You leveled up.</h2><p>The next threshold is higher. So is your capacity.</p><button class="button primary" id="level-up-close" type="button">Continue campaign</button></div></div>
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090b11"><meta name="robots" content="noindex,nofollow"><title>Command Center — Life RPG</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css?v=__BUILD_ID__"><script defer src="/app.js?v=__BUILD_ID__"></script>
+<style id="liferpg-badge-polish">
+/* Loot Vault badge polish — isolated to badge cards only. */
+#shop-grid [data-liferpg-badge] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 240px;
+}
+#shop-grid [data-liferpg-badge]::after {
+  content: "";
+  position: absolute;
+  inset: auto -34px -48px auto;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--badge-accent) 13%, transparent) 0%, transparent 67%);
+  pointer-events: none;
+  z-index: -1;
+}
+#shop-grid .rpg-badge-emblem {
+  --badge-accent: #d8a83e;
+  --badge-metal-1: #f6df9b;
+  --badge-metal-2: #8c651d;
+  --badge-core: #181713;
+  width: 72px;
+  height: 72px;
+  margin: 0 0 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255,255,255,.34), transparent 20%),
+    linear-gradient(145deg, var(--badge-metal-1), var(--badge-metal-2));
+  border: 1px solid color-mix(in srgb, var(--badge-metal-1) 72%, #fff 10%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.28) inset,
+    0 -5px 9px rgba(0,0,0,.34) inset,
+    0 10px 28px rgba(0,0,0,.26);
+}
+#shop-grid .rpg-badge-emblem::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 42% 30%, rgba(255,255,255,.08), transparent 28%),
+    var(--badge-core);
+  border: 1px solid rgba(255,255,255,.11);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.28) inset;
+}
+#shop-grid .rpg-badge-emblem::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  border: 1px dashed color-mix(in srgb, var(--badge-accent) 55%, transparent);
+  opacity: .7;
+}
+#shop-grid .rpg-badge-glyph {
+  position: relative;
+  z-index: 1;
+  font-size: 23px;
+  line-height: 1;
+  color: var(--badge-metal-1);
+  text-shadow: 0 1px 0 rgba(0,0,0,.8), 0 0 14px color-mix(in srgb, var(--badge-accent) 32%, transparent);
+}
+#shop-grid .rpg-badge-tier {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  padding: 4px 7px;
+  border: 1px solid color-mix(in srgb, var(--badge-accent) 30%, rgba(255,255,255,.08));
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--badge-accent) 82%, #fff 18%);
+  background: color-mix(in srgb, var(--badge-accent) 7%, rgba(10,12,17,.88));
+  font: 700 9px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+#shop-grid [data-liferpg-badge="first-flame"] {
+  --badge-accent: #d6a63c;
+}
+#shop-grid [data-liferpg-badge="first-flame"] .rpg-badge-emblem {
+  --badge-metal-1: #f1d37e;
+  --badge-metal-2: #72501a;
+  --badge-core: #18140f;
+}
+#shop-grid [data-liferpg-badge="iron-will"] {
+  --badge-accent: #aeb9c8;
+}
+#shop-grid [data-liferpg-badge="iron-will"] .rpg-badge-emblem {
+  --badge-metal-1: #d5dce5;
+  --badge-metal-2: #596473;
+  --badge-core: #12161b;
+}
+#shop-grid [data-liferpg-badge="ascendant"] {
+  --badge-accent: #b69cff;
+}
+#shop-grid [data-liferpg-badge="ascendant"] .rpg-badge-emblem {
+  --badge-metal-1: #e2d7ff;
+  --badge-metal-2: #6952a4;
+  --badge-core: #15121c;
+}
+#shop-grid [data-liferpg-badge] .rpg-price-note {
+  display: inline-block;
+  margin-left: 7px;
+  color: rgba(226,231,242,.46);
+  font: 600 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #shop-grid [data-liferpg-badge]:hover .rpg-badge-emblem {
+    transform: translateY(-2px) rotate(-1.2deg);
+    transition: transform 180ms ease;
+  }
+}
+</style>
+
+</head>
+<html> 
+<body class="app-body" data-theme="void">
+  <a class="skip-link" href="#app-main">Skip to main content</a>
+
+  <div class="noise" aria-hidden="true"></div>
+
+  <div
+    class="network-banner hidden"
+    id="network-banner"
+    role="status"
+  >
+    Connection lost. Unsaved actions will not be faked.
+  </div>
+
+  <div class="app-shell" id="app-shell" aria-busy="true">
+    <aside class="sidebar" aria-label="Life RPG navigation">
+      <a class="brand app-brand" href="/">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span>
+        </span>
+
+        <span>
+          SIGMA LIFE<span class="brand-accent">RPG</span>
+        </span>
+      </a>
+
+      <nav class="sidebar-nav">
+        <button
+          class="nav-item active"
+          type="button"
+          data-view="quests"
+        >
+          <span>⌁</span>
+          <span>Quests</span>
+        </button>
+
+        <button
+          class="nav-item"
+          type="button"
+          data-view="shop"
+        >
+          <span>◇</span>
+          <span>Loot vault</span>
+        </button>
+
+        <button
+          class="nav-item"
+          type="button"
+          data-view="history"
+        >
+          <span>◒</span>
+          <span>Activity</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="mini-player">
+          <div class="mini-avatar" id="mini-avatar">01</div>
+
+          <div>
+            <strong id="sidebar-name">Player</strong>
+            <span id="sidebar-rank">Level 1</span>
+          </div>
+        </div>
+
+        <button
+          class="nav-item danger"
+          id="logout-button"
+          type="button"
+        >
+          <span>↪</span>
+          <span>Sign out</span>
+        </button>
+      </div>
+    </aside>
+
+    <main id="app-main" class="dashboard-main">
+      <header class="dashboard-header">
+        <div>
+          <p class="eyebrow" id="day-label">COMMAND CENTER</p>
+
+          <h1>
+            <span id="greeting">Ready, Player?</span>
+            <span class="muted">
+              Your next level is built one quest at a time.
+            </span>
+          </h1>
+        </div>
+
+        <div class="header-wallet">
+          <span class="wallet-icon">◈</span>
+
+          <div>
+            <small>GOLD</small>
+            <strong id="gold-count">0</strong>
+          </div>
+        </div>
+      </header>
+
+      <section id="view-quests" class="view-panel active">
+        <div class="dashboard-grid top-grid">
+          <article class="player-panel panel">
+            <div class="player-level-wrap">
+              <div class="level-ring" id="level-ring">
+                <span>LVL</span>
+                <strong id="level-number">1</strong>
+              </div>
+
+              <div class="player-rank">
+                <p>ACTIVE CLASS</p>
+                <h3>WAYFINDER</h3>
+                <span id="equipped-badge">No badge equipped</span>
+              </div>
+            </div>
+
+            <div class="progress-stack">
+              <div class="progress-label">
+                <span>LEVEL PROGRESS</span>
+                <b id="xp-label">0 / 100 XP</b>
+              </div>
+
+              <div class="xp-bar large">
+                <span
+                  id="xp-progress"
+                  style="width:0%"
+                ></span>
+              </div>
+
+              <small id="xp-remaining">
+                100 XP until level 2
+              </small>
+            </div>
+
+            <div
+              class="attribute-grid"
+              id="attribute-grid"
+            ></div>
+          </article>
+
+          <article class="streak-panel panel">
+            <div class="panel-label">CURRENT STREAK</div>
+
+            <div class="streak-value">
+              <span class="streak-flame">◒</span>
+              <strong id="streak-count">0</strong>
+              <span>days</span>
+            </div>
+
+            <p id="streak-copy">
+              Clear one quest today to ignite your streak.
+            </p>
+
+            <div
+              class="streak-week"
+              id="streak-week"
+            ></div>
+          </article>
+        </div>
+
+        <div class="quest-section-head">
+          <div>
+            <p class="eyebrow">ACTIVE QUEST LOG</p>
+            <h2>Choose the next action.</h2>
+          </div>
+
+          <button
+            class="button primary"
+            id="new-quest-button"
+            type="button"
+          >
+            + Forge quest
+          </button>
+        </div>
+
+        <div class="quest-toolbar">
+          <div class="filter-tabs" role="tablist">
+            <button
+              type="button"
+              class="active"
+              data-filter="active"
+              aria-selected="true"
+            >
+              Active
+              <span id="active-count">0</span>
+            </button>
+
+            <button
+              type="button"
+              data-filter="completed"
+              aria-selected="false"
+            >
+              Cleared
+              <span id="completed-count">0</span>
+            </button>
+
+            <button
+              type="button"
+              data-filter="all"
+              aria-selected="false"
+            >
+              All
+            </button>
+          </div>
+
+          <label class="search-field">
+            <span aria-hidden="true">⌕</span>
+
+            <input
+              id="quest-search"
+              type="search"
+              placeholder="Search quest log"
+              aria-label="Search quests"
+            >
+          </label>
+        </div>
+
+        <div
+          id="quest-list"
+          class="quest-list"
+          aria-live="polite"
+        >
+          <div class="quest-skeleton"></div>
+          <div class="quest-skeleton"></div>
+        </div>
+      </section>
+
+      <section id="view-shop" class="view-panel">
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">LOOT VAULT</p>
+
+            <h2>Spend progress. Keep the proof.</h2>
+
+            <p>
+              Cosmetics and relics are purchased with gold earned from
+              completed quests.
+            </p>
+          </div>
+
+          <div class="vault-balance">
+            <span>AVAILABLE</span>
+
+            <b>
+              ◈ <span id="shop-gold">0</span>
+            </b>
+          </div>
+        </div>
+
+        <div
+          class="shop-grid"
+          id="shop-grid"
+        ></div>
+
+        <div class="inventory-heading">
+          <p class="eyebrow">INVENTORY</p>
+          <h2>Your collection</h2>
+        </div>
+
+        <div
+          class="inventory-grid"
+          id="inventory-grid"
+        ></div>
+      </section>
+
+      <section id="view-history" class="view-panel">
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">ACTIVITY LOG</p>
+
+            <h2>Every action leaves a trace.</h2>
+
+            <p>
+              Server-persisted history of your campaign.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="timeline"
+          id="activity-timeline"
+        ></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog
+    class="quest-dialog"
+    id="quest-dialog"
+  >
+    <button
+      class="dialog-close"
+      type="button"
+      data-close-quest
+      aria-label="Close"
+    >
+      ×
+    </button>
+
+    <p class="eyebrow">QUEST FORGE</p>
+
+    <h2 id="quest-dialog-title">
+      Create a new quest
+    </h2>
+
+    <p>
+      Define one clear action. Rewards are calculated by the server.
+    </p>
+
+    <form
+      id="quest-form"
+      class="quest-form"
+    >
+      <input
+        type="hidden"
+        name="taskId"
+      >
+
+      <label class="full-row">
+        <span>Quest objective</span>
+
+        <input
+          name="title"
+          type="text"
+          maxlength="120"
+          required
+          placeholder="e.g. Finish API integration"
+        >
+      </label>
+
+      <label class="full-row">
+        <span>
+          Notes
+          <small>optional</small>
+        </span>
+
+        <textarea
+          name="notes"
+          maxlength="300"
+          rows="3"
+          placeholder="What does done look like?"
+        ></textarea>
+      </label>
+
+      <label>
+        <span>Attribute</span>
+
+        <select name="category">
+          <option value="intellect">◈ Intellect</option>
+          <option value="strength">▲ Strength</option>
+          <option value="discipline">◆ Discipline</option>
+          <option value="vitality">✦ Vitality</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Difficulty</span>
+
+        <select name="difficulty">
+          <option value="easy">Easy · +20 XP</option>
+          <option
+            value="medium"
+            selected
+          >
+            Medium · +40 XP
+          </option>
+          <option value="hard">Hard · +70 XP</option>
+          <option value="epic">Epic · +110 XP</option>
+        </select>
+      </label>
+
+      <div class="reward-preview full-row">
+        <span>ESTIMATED PAYOUT</span>
+        <strong id="reward-preview">
+          +40 XP · +15 GOLD
+        </strong>
+      </div>
+
+      <button
+        class="button primary full full-row"
+        type="submit"
+      >
+        Save quest →
+      </button>
+    </form>
+
+    <p
+      class="form-status"
+      id="quest-status"
+      role="status"
+      aria-live="polite"
+    ></p>
+  </dialog>
+
+  <div
+    class="toast-region"
+    id="toast-region"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+  <div
+    class="level-up-overlay hidden"
+    id="level-up-overlay"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="level-up-card">
+      <p class="eyebrow">ASCENSION CONFIRMED</p>
+
+      <div class="ascension-ring">
+        <span>LEVEL</span>
+        <strong id="level-up-number">2</strong>
+      </div>
+
+      <h2>You leveled up.</h2>
+
+      <p>
+        The next threshold is higher. So is your capacity.
+      </p>
+
+      <button
+        class="button primary"
+        id="level-up-close"
+        type="button"
+      >
+        Continue campaign
+      </button>
+    </div>
+  </div>
+
+  <script id="liferpg-badge-polish-script">
+    /*
+      Badge presentation override.
+      IMPORTANT: the visible costs below must also be mirrored in the server/shop
+      catalog before production if purchases are server-authoritative.
+    */
+    (() => {
+      const BADGES = {
+        "First Flame": {
+          key: "first-flame",
+          price: 150,
+          oldPrice: 18,
+          glyph: "✦",
+          tier: "Initiate"
+        },
+
+        "Iron Will": {
+          key: "iron-will",
+          price: 350,
+          oldPrice: 55,
+          glyph: "▲",
+          tier: "Veteran"
+        },
+
+        "Ascendant": {
+          key: "ascendant",
+          price: 900,
+          oldPrice: 160,
+          glyph: "⬡",
+          tier: "Ascendant"
+        }
+      };
+
+      const leafNodes = (root) =>
+        [...root.querySelectorAll("*")].filter(
+          (el) => el.children.length === 0
+        );
+
+      function replaceVisiblePrice(card, oldPrice, newPrice) {
+        const candidates = leafNodes(card).filter((el) => {
+          const t = el.textContent.trim();
+
+          return (
+            t.length <= 16 &&
+            new RegExp(
+              `(^|\\D)${oldPrice}(\\D|$)`
+            ).test(t)
+          );
+        });
+
+        const priceNode = candidates[0];
+
+        if (!priceNode) return;
+
+        priceNode.textContent =
+          priceNode.textContent.replace(
+            new RegExp(`\\b${oldPrice}\\b`),
+            String(newPrice)
+          );
+
+        priceNode.dataset.badgePrice = String(newPrice);
+
+        if (
+          !priceNode.querySelector?.(".rpg-price-note") &&
+          priceNode.parentElement
+        ) {
+          const note = document.createElement("span");
+
+          note.className = "rpg-price-note";
+          note.textContent = "milestone";
+
+          priceNode.parentElement.appendChild(note);
+        }
+      }
+
+      function hideFlatGlyph(card, glyph) {
+        const candidate = leafNodes(card).find(
+          (el) =>
+            el.textContent.trim() === glyph &&
+            !el.closest("button") &&
+            !el.classList.contains("rpg-badge-glyph")
+        );
+
+        if (candidate) {
+          candidate.style.visibility = "hidden";
+          candidate.setAttribute("aria-hidden", "true");
+        }
+      }
+
+      function decorateBadge(card, name, config) {
+        if (card.dataset.liferpgBadge !== config.key) {
+          card.dataset.liferpgBadge = config.key;
+        }
+
+        if (!card.querySelector(".rpg-badge-emblem")) {
+          const emblem = document.createElement("div");
+
+          emblem.className = "rpg-badge-emblem";
+
+          emblem.setAttribute("role", "img");
+
+          emblem.setAttribute(
+            "aria-label",
+            `${name} collectible badge`
+          );
+
+          emblem.innerHTML = `
+            <span
+              class="rpg-badge-glyph"
+              aria-hidden="true"
+            >
+              ${config.glyph}
+            </span>
+          `;
+
+          card.prepend(emblem);
+        }
+
+        if (!card.querySelector(".rpg-badge-tier")) {
+          const tier = document.createElement("span");
+
+          tier.className = "rpg-badge-tier";
+          tier.textContent = config.tier;
+
+          card.appendChild(tier);
+        }
+
+        hideFlatGlyph(card, config.glyph);
+
+        replaceVisiblePrice(
+          card,
+          config.oldPrice,
+          config.price
+        );
+      }
+
+      function polishLootVault() {
+        const grid = document.getElementById("shop-grid");
+
+        if (!grid) return;
+
+        [...grid.children].forEach((card) => {
+          const text = card.textContent || "";
+
+          for (const [name, config] of Object.entries(BADGES)) {
+            if (text.includes(name)) {
+              decorateBadge(card, name, config);
+              break;
+            }
+          }
+        });
+      }
+
+      window.addEventListener(
+        "DOMContentLoaded",
+        () => {
+          polishLootVault();
+
+          const grid =
+            document.getElementById("shop-grid");
+
+          if (!grid) return;
+
+          new MutationObserver(
+            polishLootVault
+          ).observe(grid, {
+            childList: true,
+            subtree: true,
+            characterData: true
+          });
+        }
+      );
+    })();
+  </script>
+</body>
+</html>
