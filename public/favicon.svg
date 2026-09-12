@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Life RPG sigil">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#6dffcf"/><stop offset="1" stop-color="#8e72ff"/></linearGradient></defs>
+  <rect width="64" height="64" rx="16" fill="#090b11"/>
+  <path d="M32 8l18 10v20L32 56 14 46V20z" fill="none" stroke="url(#g)" stroke-width="4"/>
+  <path d="M32 17v30M21 25l11 7 11-7" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

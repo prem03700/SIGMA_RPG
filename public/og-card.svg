@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080a0f"/><stop offset="1" stop-color="#11182a"/></linearGradient><linearGradient id="line" x1="0" x2="1"><stop stop-color="#6dffcf"/><stop offset="1" stop-color="#8e72ff"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#bg)"/><g opacity=".1" stroke="#6dffcf"><path d="M0 90h1200M0 180h1200M0 270h1200M0 360h1200M0 450h1200M0 540h1200"/><path d="M120 0v630M240 0v630M360 0v630M480 0v630M600 0v630M720 0v630M840 0v630M960 0v630M1080 0v630"/></g>
+  <path d="M110 106l58 32v65l-58 33-58-33v-65z" fill="none" stroke="url(#line)" stroke-width="8"/><path d="M110 132v78M82 153l28 18 28-18" fill="none" stroke="url(#line)" stroke-width="8" stroke-linecap="round"/>
+  <text x="205" y="176" fill="#f6f8ff" font-family="Arial" font-weight="700" font-size="58">LIFE RPG</text><text x="110" y="325" fill="#f6f8ff" font-family="Arial" font-weight="800" font-size="74">Your day is the dungeon.</text><text x="110" y="397" fill="#b8c1d7" font-family="Arial" font-size="34">Complete real quests. Earn XP. Build a character that mirrors your life.</text>
+</svg>
